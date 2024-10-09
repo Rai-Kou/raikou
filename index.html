@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Message from Babi</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #fce4ec;
+            transition: background-color 0.5s;
+            padding: 20px;
+        }
+        .container {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+        }
+        #startScreen, #questionScreen {
+            transition: opacity 0.5s;
+        }
+        #questionScreen {
+            display: none;
+            opacity: 0;
+        }
+        h1 {
+            color: #e91e63;
+            margin-bottom: 1rem;
+            font-size: 24px;
+        }
+        .greeting {
+            font-size: 18px;
+            margin-bottom: 2rem;
+            color: #333;
+        }
+        .start-button {
+            background-color: #ff4081;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: transform 0.3s, background-color 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 2rem auto;
+        }
+        .start-button:hover {
+            background-color: #e91e63;
+            transform: translateY(-5px);
+        }
+        .arrow {
+            margin-left: 10px;
+            font-size: 24px;
+        }
+        .question {
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s, transform 0.5s;
+        }
+        .question.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        button {
+            background-color: #ff4081;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 0 0.5rem;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #e91e63;
+        }
+        .result {
+            margin-top: 2rem;
+            font-size: 1.2rem;
+            color: #e91e63;
+            display: none;
+        }
+        #finalMessage {
+            margin-top: 1rem;
+            font-size: 1.3rem;
+            color: #e91e63;
+            font-weight: bold;
+            display: none;
+        }
+        .heart {
+            display: inline-block;
+            animation: pulse 1s infinite;
+        }
+        video {
+            max-width: 100%;
+            margin-top: 1rem;
+            border-radius: 10px;
+            display: none;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="startScreen">
+            <div class="greeting">
+                <h1>Hi, Ayen! This is Babi :)</h1>
+                <p>I want to ask you something.</p>
+            </div>
+            <button class="start-button" onclick="startQuestions()">
+                Click here to continue <span class="arrow">→</span>
+            </button>
+        </div>
+
+        <div id="questionScreen">
+            <h1>How are you feeling?</h1>
+            <div id="question1" class="question">
+                <p>Are you tired?</p>
+                <button onclick="answer(1, true)">Yes</button>
+                <button onclick="answer(1, false)">No</button>
+            </div>
+            <div id="question2" class="question">
+                <p>Are you worried?</p>
+                <button onclick="answer(2, true)">Yes</button>
+                <button onclick="answer(2, false)">No</button>
+            </div>
+            <div id="question3" class="question">
+                <p>Are you anxious?</p>
+                <button onclick="answer(3, true)">Yes</button>
+                <button onclick="answer(3, false)">No</button>
+            </div>
+            
+            <div id="encouragement" class="result"></div>
+            <div id="hugMessage" class="result">
+                <span class="heart">❤️</span> Here's a big hug to keep you going! <span class="heart">❤️</span>
+            </div>
+            
+            <video id="hugVideo" autoplay muted style="display: none;">
+                <source src="huggies.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            
+            <div id="finalMessage">
+                Babi is always here. I love you my lablab! 💕 😚
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let answers = [null, null, null];
+        let currentQuestion = 1;
+        
+        const encouragements = [
+            "Are you sure? 🤨",
+            "You know you can tell me anything, love oki? 🤗",
+            "You better be telling the truth or Babi will be sad 🥺"
+        ];
+
+        function startQuestions() {
+            document.getElementById('startScreen').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('startScreen').style.display = 'none';
+                document.getElementById('questionScreen').style.display = 'block';
+                setTimeout(() => {
+                    document.getElementById('questionScreen').style.opacity = '1';
+                    showNextQuestion();
+                }, 50);
+            }, 500);
+        }
+
+        function showNextQuestion() {
+            const currentElement = document.getElementById(`question${currentQuestion}`);
+            currentElement.classList.add('visible');
+        }
+
+        function answer(questionNumber, isYes) {
+            answers[questionNumber - 1] = isYes;
+            
+            if (!isYes) {
+                const encouragement = document.getElementById('encouragement');
+                encouragement.textContent = encouragements[Math.floor(Math.random() * encouragements.length)];
+                encouragement.style.display = 'block';
+            }
+            
+            if (questionNumber < 3) {
+                currentQuestion++;
+                showNextQuestion();
+            } else {
+                checkAllAnswers();
+            }
+        }
+
+        function checkAllAnswers() {
+            const hugMessage = document.getElementById('hugMessage');
+            const hugVideo = document.getElementById('hugVideo');
+            const finalMessage = document.getElementById('finalMessage');
+            
+            if (answers.every(answer => answer === true)) {
+                hugMessage.style.display = 'block';
+                hugVideo.style.display = 'block';
+                document.body.style.backgroundColor = '#f8bbd0';
+            }
+            
+            setTimeout(() => {
+                finalMessage.style.display = 'block';
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
